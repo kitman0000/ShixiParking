@@ -1,0 +1,174 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="ie6 oldie"> <![endif]-->
+<!--[if IE 7]>    <html class="ie7 oldie"> <![endif]-->
+<!--[if IE 8]>    <html class="ie8 oldie"> <![endif]-->
+
+<!--[if gt IE 8]><!-->
+<html class="">
+
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>市西停车网页版</title>
+<link href="boilerplate.css" rel="stylesheet" type="text/css">
+<link href="Untitled-2.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<!-- 
+要详细了解文件顶部 html 标签周围的条件注释:
+paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/
+
+如果您使用的是 modernizr (http://www.modernizr.com/) 的自定义内部版本，请执行以下操作:
+* 在此处将链接插入 js 
+* 将下方链接移至 html5shiv
+* 将“no-js”类添加到顶部的 html 标签
+* 如果 modernizr 内部版本中包含 MQ Polyfill，您也可以将链接移至 respond.min.js 
+-->
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<style>
+.LoginReg {
+	margin-top: 10px;
+}
+</style>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script src="respond.min.js"></script>
+</head>
+<body>
+<title>市西停车网页版</title>
+<div class="gridContainer clearfix">
+	<div>
+    <div style="width:100%; padding-top:10px;  padding-left:10px; background:#8c1515; height:40px; color:#FFF"; align="left" >
+    <img  src="pic/actionbar.png" height="25px" width="25px" style="margin-bottom:5px">
+    市西停车
+    </div>
+    	<div style="margin-left:20px; margin-right:20px; margin-top:20px" >
+        <div style="width:90px; float:left"  align="center" >
+        A类车位剩余
+        <p id="A">1</p>
+        </div>
+        
+        <div style="width:90px; float:left"  align=center>
+        C类车位剩余
+        <p id="C">1</p>
+        </div>
+        
+        <div style=" width:90px; float:left"  align="center">
+        D类车位剩余
+        <p id="D">1</p>
+        </div>
+    </div>
+    	</br>
+        <div align="center">
+        <span id="response" style="float:left">目前未申请车位</span></p>
+        <span style="font-size:100px" id="ParkID">&nbsp;</span>
+        </div>
+    <div style="margin-left:35px; margin-top:20px">
+
+     <input value="申请车位"type="button" class="btn  SXButton"  style="width:250px" id="RequestButton" onClick="RequestPark()"></br>
+     <input value="刷新数据"type="button" class="btn  SXButton"  style="width:250px" onClick="Refresh()"></br>
+     <input value="更多功能"type="button" class="btn  SXButton"  style="width:250px" onClick="moreFunction()">
+	</div>
+
+</div>
+<!-- MD5加密-->
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+ <script>
+ 
+function Refresh()
+{
+	request = new XMLHttpRequest();
+	request.open("POST","CheckNumber");
+	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	request.send("username="+Username);
+	request.onreadystatechange = RefreshResult;
+}
+
+function RefreshResult()
+{
+	A = document.getElementById("A");
+	D = document.getElementById("D");
+	C = document.getElementById("C");
+	res = request.responseText;
+	im = res.split("&&");
+	A.innerHTML = im[1];
+	D.innerHTML = im[2];
+	C.innerHTML = im[3];
+	response = document.getElementById("response");
+	ParkID = document.getElementById("ParkID");
+	RequestButton = document.getElementById("RequestButton");
+	if(im[4] == "NaN")
+	{
+		response.innerHTML = "目前未申请到停车位.";
+		ParkID.innerHTML = "&nbsp;";
+		RequestButton.value = "申请车位";
+	}else{
+		response.innerHTML = "已经申请到车位,请按时使用。您的车位是:";
+		ParkID.innerHTML = im[4];
+		RequestButton.value = "取消申请";
+	}
+	
+}
+	response = document.getElementById("response");
+function godo()
+{
+		response.innerHTML = "已经申请到车位,请按时使用。您的车位是:";
+		ParkID.innerHTML = "A1";
+		RequestButton.value = "取消申请";
+}
+
+function undo()
+{
+		response.innerHTML = "目前未申请到停车位";
+		ParkID.innerHTML = "&nbsp;";
+		RequestButton.value = "申请车位";
+
+}
+
+
+function RequestPark()
+{
+	request = new XMLHttpRequest();
+	if(RequestButton.value=="申请车位")
+	{
+		godo();
+	}else{
+		undo();
+	}
+}
+function EndRequestPark()
+{
+	res = request.responseText;
+	im = res.split("&&");
+	if(im[1] == "full")
+	{
+		response.innerHTML = "申请失败";
+	}
+	else
+	{
+		Refresh();
+	}
+}
+function EndCancelPark()
+{
+	Refresh();
+}
+function getCookie(cname)
+{
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) 
+  {
+    var c = ca[i].trim();
+    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+  return "";
+}
+function moreFunction()
+{
+	window.location.href = "moreFunction.html";
+}
+</script>
+</body>
+</html>

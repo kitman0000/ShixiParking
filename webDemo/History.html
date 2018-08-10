@@ -1,0 +1,130 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="ie6 oldie"> <![endif]-->
+<!--[if IE 7]>    <html class="ie7 oldie"> <![endif]-->
+<!--[if IE 8]>    <html class="ie8 oldie"> <![endif]-->
+
+<!--[if gt IE 8]><!-->
+<html class="">
+
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>无标题文档</title>
+<link href="boilerplate.css" rel="stylesheet" type="text/css">
+<link href="Untitled-2.css" rel="stylesheet" type="text/css">
+
+<!-- 
+要详细了解文件顶部 html 标签周围的条件注释:
+paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/
+
+如果您使用的是 modernizr (http://www.modernizr.com/) 的自定义内部版本，请执行以下操作:
+* 在此处将链接插入 js 
+* 将下方链接移至 html5shiv
+* 将“no-js”类添加到顶部的 html 标签
+* 如果 modernizr 内部版本中包含 MQ Polyfill，您也可以将链接移至 respond.min.js 
+-->
+<!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<style>
+.LoginReg {
+	margin-top: 10px;
+}
+</style>
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<script src="respond.min.js"></script>
+</head>
+<body>
+<title>市西停车网页版</title>
+<div class="gridContainer clearfix">
+	<div>
+    <div style="width:100%; padding-top:10px;  padding-left:10px; background:#8c1515; height:40px; color:#FFF" ;="" align="left">
+    <img src="pic/actionbar.png" style="margin-bottom:5px" width="25px" height="25px">
+    市西停车
+    </div>
+    <div style="margin-left:50px; margin-top:20px">
+        <div id="List">
+        	<div id="Today">
+            <span style="text-align:center; float:left">
+            
+            </span>
+            <br>
+            8月3日<br><span style="text-align:left; float:left">A1</span><span style="text-align:right; float:right">张青</span><br><span style="text-align:left; float:left">A2</span><span style="text-align:right; float:right">胡向群</span><br><span style="text-align:left; float:left">A3</span><span style="text-align:right; float:right">吴蔼忠</span><br><span style="text-align:left; float:left">B1</span><span style="text-align:right; float:right">孙猴子</span><br><span style="text-align:left; float:left">B2</span><span style="text-align:right; float:right">猪八戒</span><br><span style="text-align:left; float:left">C1</span><span style="text-align:right; float:right">孙坚</span><br><span style="text-align:left; float:left">C2</span><span style="text-align:right; float:right">孙策</span><br><span style="text-align:left; float:left">C3</span><span style="text-align:right; float:right">孙权</span><br></div>
+
+            <div id="Yesterday">
+            <span style="text-align:center; float:left">
+
+            </span>
+            
+            <br>
+            8月4日<br><span style="text-align:left; float:left">B1</span><span style="text-align:right; float:right">刘备</span><br><span style="text-align:left; float:left">B2</span><span style="text-align:right; float:right">关羽</span><br><span style="text-align:left; float:left">B3</span><span style="text-align:right; float:right">张飞</span><br><span style="text-align:left; float:left">C1</span><span style="text-align:right; float:right">曹操</span><br><span style="text-align:left; float:left">C2</span><span style="text-align:right; float:right">曹植</span><br><span style="text-align:left; float:left">C3</span><span style="text-align:right; float:right">曹丕</span><br></div>
+        </div>
+    </div>
+</div>
+<!-- MD5加密-->
+<script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+ <script>
+ 
+	//判断是否登录
+	Username = getCookie("Username");
+	Password = getCookie("Password");
+	Today = document.getElementById("Today");
+	Yesterday = document.getElementById("Yesterday");
+	Today.innerHTML = Today.innerHTML +  GetDateStr(0) +"</br>";
+	Yesterday.innerHTML = Yesterday.innerHTML + GetDateStr(1) +"</br>";
+	request = new XMLHttpRequest();
+	request.open("POST","GetHistory");
+	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	request.send();
+	request.onreadystatechange = ReadyHistory;
+	
+function ReadyHistory()
+{
+
+	im = request.responseText.split("^^");
+	T = im[0];
+	T_array =T.split("&&");
+
+
+	
+	for(var i =1;i<T_array.length-1;i++)
+	{
+		park = T_array[i].split("**");
+		if(Today.innerHTML.indexOf(park[0])!=-1)return;
+		Today.innerHTML = Today.innerHTML + "<span style=\"text-align:left; float:left\">"+park[0]+"</span><span style=\"text-align:right; float:right\">"+park[1]+"</span></br>";
+	}
+	
+	T = im[1];
+	T_array =T.split("&&");
+	for(var i =1;i<T_array.length-1;i++)
+	{
+		park = T_array[i].split("**");
+		Yesterday.innerHTML = Yesterday.innerHTML + "<span style=\"text-align:left; float:left\">"+park[0]+"</span><span style=\"text-align:right; float:right\">"+park[1]+"</span></br>";
+	}
+
+}
+
+function getCookie(cname)
+{
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) 
+  {
+    var c = ca[i].trim();
+    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+  return "";
+}
+function GetDateStr(AddDayCount) {
+    var dd = new Date();
+    dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
+    var m = dd.getMonth()+1;//获取当前月份的日期
+    var d = dd.getDate();
+    return m+"月"+d+ "日";
+}
+</script>
+
+
+</div></body>
+</html>
